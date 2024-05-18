@@ -1,3 +1,23 @@
+fn zip_with<T, F, U>(a: Vec<T>, b: Vec<T>, f: F) -> Vec<U>
+where
+    F: Fn(T, T) -> U,
+{
+    a.into_iter().zip(b).map(|(x, y)| f(x, y)).collect()
+}
+
+fn direct_with<T, F, U>(a: Vec<T>, b: Vec<T>, f: F) -> Vec<U>
+where
+    F: Fn(&T, &T) -> U,
+{
+    let mut res = vec![];
+    for aa in &a {
+        for bb in &b {
+            res.push(f(aa, bb));
+        }
+    }
+    return res;
+}
+
 /// Depth-First Search
 /// startから辿れるだけ辿って、その経緯を記録する
 /// no_nextで、次のパスがないも場合(currentが探索の最後の頂点になっている場合)にのみ記録するようにしている。
