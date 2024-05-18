@@ -17,6 +17,27 @@ where
     }
     return res;
 }
+// use rand::Rng;
+
+// fn generate_random_an(max_size: usize, min_value: i64, max_value: i64) -> Vec<i64> {
+//     let mut rng = rand::thread_rng();
+//     let size = rng.gen_range(1, max_size);
+//     (0..size)
+//         .map(|_| rng.gen_range(min_value, max_value))
+//         .collect()
+// }
+/*
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_solve() {
+        assert_eq!(0, 0);
+    }
+}
+
+*/
 
 /// Depth-First Search
 /// startから辿れるだけ辿って、その経緯を記録する
