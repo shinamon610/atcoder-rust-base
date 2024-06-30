@@ -16,6 +16,16 @@ fn eratosthenes(n: i32) -> Vec<bool> {
     is_prime
 }
 
+fn euclidean_algorithm(mut a: i32, mut b: i32) -> i32 {
+    while a != 0 && b != 0 {
+        if a > b {
+            a = a % b;
+        } else {
+            b = b % a;
+        }
+    }
+    return if a == 0 { b } else { a };
+}
 // use rand::Rng;
 
 // fn generate_random_an(max_size: usize, min_value: i64, max_value: i64) -> Vec<i64> {
