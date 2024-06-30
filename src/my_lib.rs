@@ -1,3 +1,21 @@
+fn eratosthenes(n: i32) -> Vec<bool> {
+    let mut is_prime = vec![true; n as usize + 1];
+    is_prime[0] = false;
+    is_prime[1] = false;
+    let mut i = 2;
+    while i * i <= n as usize {
+        if is_prime[i] {
+            let mut j = 2 * i;
+            while j <= n as usize {
+                is_prime[j] = false;
+                j += i;
+            }
+        }
+        i += 1;
+    }
+    is_prime
+}
+
 // use rand::Rng;
 
 // fn generate_random_an(max_size: usize, min_value: i64, max_value: i64) -> Vec<i64> {
