@@ -1,22 +1,3 @@
-fn zip_with<T, F, U>(a: Vec<T>, b: Vec<T>, f: F) -> Vec<U>
-where
-    F: Fn(T, T) -> U,
-{
-    a.into_iter().zip(b).map(|(x, y)| f(x, y)).collect()
-}
-
-fn direct_with<T, F, U>(a: Vec<T>, b: Vec<T>, f: F) -> Vec<U>
-where
-    F: Fn(&T, &T) -> U,
-{
-    let mut res = vec![];
-    for aa in &a {
-        for bb in &b {
-            res.push(f(aa, bb));
-        }
-    }
-    return res;
-}
 // use rand::Rng;
 
 // fn generate_random_an(max_size: usize, min_value: i64, max_value: i64) -> Vec<i64> {
