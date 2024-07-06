@@ -55,6 +55,7 @@ fn mod_factorial(mut a: i128, mod_n: i128) -> i128 {
     return res;
 }
 
+// mod_n=1000000007
 fn mod_ncr(n: i128, r: i128, mod_n: i128) -> i128 {
     mod_div(
         mod_factorial(n, mod_n),
