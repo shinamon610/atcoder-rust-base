@@ -46,6 +46,22 @@ fn mod_div(a: i128, b: i128, mod_n: i128) -> i128 {
     return (a * mod_pow(b, mod_n - 2, mod_n)) % mod_n;
 }
 
+fn mod_factorial(mut a: i128, mod_n: i128) -> i128 {
+    let mut res = 1;
+    while a > 1 {
+        res = (res * a) % mod_n;
+        a -= 1;
+    }
+    return res;
+}
+
+fn mod_ncr(n: i128, r: i128, mod_n: i128) -> i128 {
+    mod_div(
+        mod_factorial(n, mod_n),
+        mod_factorial(r, mod_n) * mod_factorial(n - r, mod_n),
+        mod_n,
+    )
+}
 // use rand::Rng;
 
 // fn generate_random_an(max_size: usize, min_value: i64, max_value: i64) -> Vec<i64> {
