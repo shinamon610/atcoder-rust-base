@@ -42,6 +42,10 @@ fn mod_pow(a: i128, b: i128, mod_n: i128) -> i128 {
     return res;
 }
 
+fn mod_div(a: i128, b: i128, mod_n: i128) -> i128 {
+    return (a * mod_pow(b, mod_n - 2, mod_n)) % mod_n;
+}
+
 // use rand::Rng;
 
 // fn generate_random_an(max_size: usize, min_value: i64, max_value: i64) -> Vec<i64> {
