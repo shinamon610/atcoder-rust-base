@@ -26,6 +26,22 @@ fn euclidean_algorithm(mut a: i32, mut b: i32) -> i32 {
     }
     return if a == 0 { b } else { a };
 }
+
+fn mod_pow(a: i128, b: i128, mod_n: i128) -> i128 {
+    let mut aas = vec![a];
+    for _ in 0..30 {
+        aas.push((aas.last().unwrap() * aas.last().unwrap()) % mod_n);
+    }
+    let binary_b: Vec<char> = format!("{:b}", b).chars().rev().collect();
+    let mut res = 1;
+    for (i, bb) in binary_b.iter().enumerate() {
+        if *bb == '1' {
+            res = (res * aas[i]) % mod_n;
+        }
+    }
+    return res;
+}
+
 // use rand::Rng;
 
 // fn generate_random_an(max_size: usize, min_value: i64, max_value: i64) -> Vec<i64> {
