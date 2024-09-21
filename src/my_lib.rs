@@ -138,3 +138,11 @@ mod tests {
         assert_eq!(paths, expected_paths);
     }
 }
+
+fn to_yes_no(b: bool) -> &'static str {
+    if b {
+        "Yes"
+    } else {
+        "No"
+    }
+}
