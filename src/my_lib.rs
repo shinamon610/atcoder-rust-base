@@ -146,3 +146,108 @@ fn to_yes_no(b: bool) -> &'static str {
         "No"
     }
 }
+
+// ac_libraryの使い方サンプル
+/*
+use proconio::{input, fastout};
+use ac_library::Dsu;
+
+#[fastout]
+fn main() {
+    // 入力例
+    // n=5, m=3, q=3
+    // 辺: (0,1), (2,3), (3,4)
+    // クエリ:
+    //   same(0,1)? -> yes
+    //   same(1,2)? -> no
+    //   same(2,4)? -> yes
+    input! {
+        n: usize,   // 頂点数
+        m: usize,   // 辺数
+        q: usize,   // クエリ数
+        edges: [(usize, usize); m], // 辺の一覧
+        queries: [(usize, usize); q], // クエリ頂点ペア
+    }
+
+    let mut dsu = Dsu::new(n);
+
+    // 全ての辺でunion操作を行い、連結成分を確定
+    for (u, v) in edges {
+        dsu.merge(u, v);
+    }
+
+    // クエリに応える
+    for (x, y) in queries {
+        if dsu.same(x, y) {
+            println!("yes");
+        } else {
+            println!("no");
+        }
+    }
+}
+*/
+
+/*
+use std::ops::{Bound::*, RangeBounds};
+use ac_library::{LazySegtree, Monoid, MapMonoid};
+
+// 区間和を管理するMonoid
+struct SumMonoid;
+
+impl Monoid for SumMonoid {
+    type S = i64;          // 要素の型
+    fn identity() -> Self::S {
+        0
+    }
+    fn binary_operation(&a: &Self::S, &b: &Self::S) -> Self::S {
+        a + b
+    }
+}
+
+// 区間加算ができるMapMonoidの実装
+struct AddMap;
+
+impl MapMonoid for AddMap {
+    type M = SumMonoid; // モノイドとしてSumMonoidを利用
+    type F = i64;       // 区間に加える値の型
+
+    fn identity_map() -> Self::F {
+        0 // 作用しない（加算しない）時の値
+    }
+
+    fn mapping(&f: &Self::F, &x: &<Self::M as Monoid>::S) -> <Self::M as Monoid>::S {
+        x + f // xにfを加算する
+    }
+
+    fn composition(&f: &Self::F, &g: &Self::F) -> Self::F {
+        f + g // 作用の合成は加算の合成
+    }
+}
+
+fn main() {
+    // 例:
+    // 初期列: a = [1, 2, 3, 4, 5]
+    let a = vec![1, 2, 3, 4, 5];
+    let mut seg = LazySegtree::<AddMap>::from(a);
+
+    // 区間和の取得: prod(range)
+    // [1,4)の区間和 = a[1]+a[2]+a[3] = 2+3+4=9
+    let sum_1_4 = seg.prod(1..4);
+    println!("sum of [1,4) = {}", sum_1_4); // 出力: 9
+
+    // 区間加算: apply_range(range, value)
+    // [0,3) に +10 を加算 -> [1+10, 2+10, 3+10, 4, 5] = [11,12,13,4,5]
+    seg.apply_range(0..3, 10);
+
+    // 再び区間和取得:
+    // [1,4)の区間和 = 12 + 13 + 4 = 29
+    let sum_1_4_after = seg.prod(1..4);
+    println!("sum of [1,4) after update = {}", sum_1_4_after); // 出力: 29
+
+    // 単一要素の取得: get(pos)
+    // a[0]は現在11になっているはず
+    let val_0 = seg.get(0);
+    println!("value at index 0 = {}", val_0); // 出力: 11
+}
+
+*/
