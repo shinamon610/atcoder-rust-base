@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 fn eratosthenes(n: i32) -> Vec<bool> {
     let mut is_prime = vec![true; n as usize + 1];
     is_prime[0] = false;
@@ -147,8 +149,45 @@ fn to_yes_no(b: bool) -> &'static str {
     }
 }
 
+// bell_splitで使ってるから、持ってきただけ
+fn xor(groups: Vec<Vec<u64>>) -> u64 {
+    return groups
+        .into_iter()
+        .map(|ss| ss.into_iter().sum::<u64>())
+        .fold(0, |acc, x| acc ^ x);
+}
+
+// anを1からn個のgroupに分割する方法。
+// ここでは、分割したあと、xorしてそれを集合を返している。genericに書き直すとTLEするからもうこのまま持ってきた。
+fn bell_split(an: &Vec<u64>, depth: usize, groups: &mut Vec<Vec<u64>>) -> HashSet<u64> {
+    if depth == an.len() {
+        let mut hs = HashSet::new();
+        hs.insert(xor(groups.clone()));
+        return hs;
+    }
+    let mut res = HashSet::new();
+    let n = groups.len().clone();
+
+    for i in 0..=groups.len() {
+        if i == n {
+            groups.push(vec![an[depth]]);
+        } else {
+            groups[i].push(an[depth]);
+        }
+        res.extend(bell_split(&an, depth + 1, groups));
+        if i == n {
+            groups.pop();
+        } else {
+            groups[i].pop();
+        }
+    }
+    return res;
+}
+
 // ac_libraryの使い方サンプル
 /*
+==Disjoint Set Union==
+
 use proconio::{input, fastout};
 use ac_library::Dsu;
 
