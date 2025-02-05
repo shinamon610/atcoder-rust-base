@@ -1,4 +1,7 @@
-use std::collections::HashSet;
+use std::{
+    cmp::{Ordering, Reverse},
+    collections::HashSet,
+};
 
 fn eratosthenes(n: i32) -> Vec<bool> {
     let mut is_prime = vec![true; n as usize + 1];
@@ -182,6 +185,38 @@ fn bell_split(an: &Vec<u64>, depth: usize, groups: &mut Vec<Vec<u64>>) -> HashSe
         }
     }
     return res;
+}
+
+// priority_queueは、BinaryHeapを使う。
+// max-heapなので、デフォルトだと、大きいものが優先的に出てくる。
+// 以下実装は、タプルの第二要素を対象としてpriority_queueを実装するためのやつ
+// https://qiita.com/tinsep19/items/0c40770969f8c185ffa6 使い方はここ参照
+struct Priority<T, P: Ord + Copy>(T, P);
+
+impl<T, P: Ord + Copy> Priority<T, P> {
+    fn new(obj: T, priority: P) -> Priority<T, P> {
+        Priority(obj, priority)
+    }
+    fn rev(obj: T, priority: P) -> Reverse<Priority<T, P>> {
+        Reverse(Priority::new(obj, priority))
+    }
+}
+
+impl<T, P: Ord + Copy> Eq for Priority<T, P> {}
+impl<T, P: Ord + Copy> PartialEq for Priority<T, P> {
+    fn eq(&self, other: &Priority<T, P>) -> bool {
+        self.1.eq(&other.1)
+    }
+}
+impl<T, P: Ord + Copy> PartialOrd for Priority<T, P> {
+    fn partial_cmp(&self, other: &Priority<T, P>) -> Option<Ordering> {
+        Some(self.1.cmp(&other.1))
+    }
+}
+impl<T, P: Ord + Copy> Ord for Priority<T, P> {
+    fn cmp(&self, other: &Priority<T, P>) -> Ordering {
+        self.1.cmp(&other.1)
+    }
 }
 
 // ac_libraryの使い方サンプル
