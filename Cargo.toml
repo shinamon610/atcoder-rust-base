@@ -11,6 +11,7 @@ name = "main"
 path = "src/main.rs"
 
 [dependencies]
+ac-library-rs = "0.1.1"
 # AtCoder 2020年言語アップデート以降に使用できるクレート。
 # 次のページに各クレートについての細かい紹介があります。
 # https://github.com/rust-lang-ja/atcoder-rust-resources/wiki/2020-Update
