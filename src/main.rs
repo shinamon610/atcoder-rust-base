@@ -1,7 +1,8 @@
 // -*- coding:utf-8-unix -*-
 
-use proconio::input;
+use proconio::{fastout, input};
 
+#[fastout]
 fn main() {
     input! {
         n: usize,
