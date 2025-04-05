@@ -68,6 +68,26 @@ fn mod_ncr(n: i128, r: i128, mod_n: i128) -> i128 {
         mod_n,
     )
 }
+
+// binary_searchサンプル めぐる式
+fn is_ok(an: &Vec<i64>, i: i64, key: i64) -> bool {
+    return an[i as usize] >= key;
+}
+
+fn b_search(an: &Vec<i64>, key: i64) -> Option<usize> {
+    let mut ng: i64 = -1;
+    let mut ok: i64 = an.len() as i64;
+    while ok.abs_diff(ng) > 1 {
+        let mid = (ok + ng) / 2;
+        if is_ok(an, mid, key) {
+            ok = mid;
+        } else {
+            ng = mid;
+        }
+    }
+    return if ok == -1 { None } else { Some(ok as usize) };
+}
+
 // use rand::Rng;
 
 // fn generate_random_an(max_size: usize, min_value: i64, max_value: i64) -> Vec<i64> {
