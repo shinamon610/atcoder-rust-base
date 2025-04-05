@@ -21,7 +21,9 @@ fn eratosthenes(n: i32) -> Vec<bool> {
     is_prime
 }
 
-fn euclidean_algorithm(mut a: i32, mut b: i32) -> i32 {
+// 最大公約数
+// gcdってやつ
+fn euclidean_algorithm(mut a: i64, mut b: i64) -> i64 {
     while a != 0 && b != 0 {
         if a > b {
             a = a % b;
@@ -30,6 +32,11 @@ fn euclidean_algorithm(mut a: i32, mut b: i32) -> i32 {
         }
     }
     return if a == 0 { b } else { a };
+}
+
+// 最小公倍数
+fn lcm(mut a: i64, mut b: i64) -> i64 {
+    return (a * b) / gcd(a, b);
 }
 
 fn mod_pow(a: i128, b: i128, mod_n: i128) -> i128 {
