@@ -22,8 +22,8 @@ fn eratosthenes(n: i32) -> Vec<bool> {
 }
 
 // 最大公約数
-// gcdってやつ
-fn euclidean_algorithm(mut a: i64, mut b: i64) -> i64 {
+// ユークリッド互助法
+fn gcd(mut a: i64, mut b: i64) -> i64 {
     while a != 0 && b != 0 {
         if a > b {
             a = a % b;
