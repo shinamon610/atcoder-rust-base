@@ -352,3 +352,87 @@ fn main() {
 }
 
 */
+
+// dp抽象化
+use std::ops::{Add, Mul};
+
+pub trait Semiring:
+    Clone + Eq + Debug + Add<Self, Output = Self> + Mul<Self, Output = Self>
+{
+    fn zero() -> Self;
+    fn one() -> Self;
+}
+
+pub struct DPProblem<'a, Sc> {
+    pub start: usize,
+    pub size: usize, // 配列サイズ（getRangeの代わり）
+    pub is_trivial: Box<dyn Fn(usize) -> Option<Sc> + 'a>,
+    pub subproblems: Box<dyn Fn(usize) -> Vec<(Sc, usize)> + 'a>,
+}
+
+pub fn dp_solve<'a, Sc>(problem: &DPProblem<'a, Sc>) -> Sc
+where
+    Sc: Semiring,
+{
+    let mut memo = vec![None; problem.size];
+    go(problem.start, problem, &mut memo)
+}
+
+fn go<Sc>(p: usize, problem: &DPProblem<Sc>, memo: &mut [Option<Sc>]) -> Sc
+where
+    Sc: Semiring,
+{
+    if let Some(val) = (problem.is_trivial)(p) {
+        return val;
+    }
+
+    if let Some(val) = &memo[p] {
+        return val.clone();
+    }
+
+    let mut acc = Sc::zero();
+
+    for (s, sp) in (problem.subproblems)(p) {
+        let val = go(sp, problem, memo);
+        acc = acc + (s * val);
+    }
+
+    memo[p] = Some(acc.clone());
+    acc
+}
+
+#[derive(Clone, PartialEq, Eq, Debug)]
+pub struct MinPlus(pub usize);
+
+impl Semiring for MinPlus {
+    fn zero() -> Self {
+        // Min-Plusでのゼロ元は無限大（もしくは十分大きな値）
+        MinPlus(std::usize::MAX)
+    }
+
+    fn one() -> Self {
+        // Min-Plusでの単位元は0
+        MinPlus(0)
+    }
+}
+// Add演算子をオーバーロードして⊕（min）操作を実装
+impl std::ops::Add for MinPlus {
+    type Output = Self;
+
+    fn add(self, other: Self) -> Self {
+        MinPlus(std::cmp::min(self.0, other.0))
+    }
+}
+
+// Mul演算子をオーバーロードして⊗（加算）操作を実装
+impl std::ops::Mul for MinPlus {
+    type Output = Self;
+
+    fn mul(self, other: Self) -> Self {
+        // オーバーフロー対策
+        if self.0 == std::usize::MAX || other.0 == std::usize::MAX {
+            return MinPlus(std::usize::MAX);
+        }
+        MinPlus(self.0 + other.0)
+    }
+}
