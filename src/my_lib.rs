@@ -354,8 +354,9 @@ fn main() {
 */
 
 // dp抽象化
+use ndarray::{Array, IxDyn};
+use std::fmt::Debug;
 use std::ops::{Add, Mul};
-
 pub trait Semiring:
     Clone + Eq + Debug + Add<Self, Output = Self> + Mul<Self, Output = Self>
 {
@@ -364,21 +365,21 @@ pub trait Semiring:
 }
 
 pub struct DPProblem<'a, Sc> {
-    pub start: usize,
-    pub size: usize, // 配列サイズ（getRangeの代わり）
-    pub is_trivial: Box<dyn Fn(usize) -> Option<Sc> + 'a>,
-    pub subproblems: Box<dyn Fn(usize) -> Vec<(Sc, usize)> + 'a>,
+    pub start: &'a [usize],
+    pub size: &'a [usize],
+    pub is_trivial: Box<dyn Fn(&[usize]) -> Option<Sc> + 'a>,
+    pub subproblems: Box<dyn Fn(&[usize], &mut Vec<(Sc, Vec<usize>)>) + 'a>,
 }
 
 pub fn dp_solve<'a, Sc>(problem: &DPProblem<'a, Sc>) -> Sc
 where
     Sc: Semiring,
 {
-    let mut memo = vec![None; problem.size];
+    let mut memo: Array<_, IxDyn> = Array::from_elem(problem.size, None);
     go(problem.start, problem, &mut memo)
 }
 
-fn go<Sc>(p: usize, problem: &DPProblem<Sc>, memo: &mut [Option<Sc>]) -> Sc
+fn go<Sc>(p: &[usize], problem: &DPProblem<Sc>, memo: &mut Array<Option<Sc>, IxDyn>) -> Sc
 where
     Sc: Semiring,
 {
@@ -391,9 +392,10 @@ where
     }
 
     let mut acc = Sc::zero();
-
-    for (s, sp) in (problem.subproblems)(p) {
-        let val = go(sp, problem, memo);
+    let mut candidates = vec![];
+    (problem.subproblems)(p, &mut candidates);
+    for (s, sp) in candidates {
+        let val = go(&sp, problem, memo);
         acc = acc + (s * val);
     }
 
@@ -401,6 +403,7 @@ where
     acc
 }
 
+// dpで使うための色々なSemiring
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub struct MinPlus(pub usize);
 
@@ -415,7 +418,6 @@ impl Semiring for MinPlus {
         MinPlus(0)
     }
 }
-// Add演算子をオーバーロードして⊕（min）操作を実装
 impl std::ops::Add for MinPlus {
     type Output = Self;
 
@@ -424,7 +426,6 @@ impl std::ops::Add for MinPlus {
     }
 }
 
-// Mul演算子をオーバーロードして⊗（加算）操作を実装
 impl std::ops::Mul for MinPlus {
     type Output = Self;
 
@@ -434,5 +435,34 @@ impl std::ops::Mul for MinPlus {
             return MinPlus(std::usize::MAX);
         }
         MinPlus(self.0 + other.0)
+    }
+}
+
+#[derive(Clone, PartialEq, Eq, Debug)]
+pub struct Boolean(pub bool);
+
+impl Semiring for Boolean {
+    fn zero() -> Self {
+        Boolean(false)
+    }
+
+    fn one() -> Self {
+        Boolean(true)
+    }
+}
+
+impl std::ops::Add for Boolean {
+    type Output = Self;
+
+    fn add(self, other: Self) -> Self {
+        Boolean(self.0 || other.0)
+    }
+}
+
+impl std::ops::Mul for Boolean {
+    type Output = Self;
+
+    fn mul(self, other: Self) -> Self {
+        Boolean(self.0 && other.0)
     }
 }

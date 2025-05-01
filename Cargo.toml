@@ -29,7 +29,7 @@ ac-library-rs = "0.1.1"
 #num-derive = "=0.3.0"
 
 # NumPyの`ndarray`のような多次元配列
-#ndarray = "=0.13.0"
+ndarray = "=0.13.0"
 
 # 線形代数
 #nalgebra = "=0.20.0"
