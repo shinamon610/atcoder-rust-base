@@ -439,6 +439,34 @@ impl std::ops::Mul for MinPlus {
 }
 
 #[derive(Clone, PartialEq, Eq, Debug)]
+pub struct MaxPlus(pub usize);
+
+impl Semiring for MaxPlus {
+    fn zero() -> Self {
+        MaxPlus(0)
+    }
+
+    fn one() -> Self {
+        MaxPlus(0)
+    }
+}
+impl std::ops::Add for MaxPlus {
+    type Output = Self;
+
+    fn add(self, other: Self) -> Self {
+        MaxPlus(std::cmp::max(self.0, other.0))
+    }
+}
+
+impl std::ops::Mul for MaxPlus {
+    type Output = Self;
+
+    fn mul(self, other: Self) -> Self {
+        MaxPlus(self.0 + other.0)
+    }
+}
+
+#[derive(Clone, PartialEq, Eq, Debug)]
 pub struct Boolean(pub bool);
 
 impl Semiring for Boolean {
